@@ -6,7 +6,7 @@
   <div class="narrow">
     <h1 class="page-title">投稿を{% if object %}編集{% else %}新規作成{% endif %}</h1>
     <div class="panel">
-      <form method="post" enctype="multipart/form-data" class="form">
+      <form method="post" class="form">
         {% csrf_token %}
         {{ form.non_field_errors }}
 
@@ -27,23 +27,31 @@
           <label for="{{ form.category.id_for_label }}">カテゴリ</label>
           {{ form.category }}
           {{ form.category.errors }}
+          <small class="muted">既存のカテゴリから選択するか、下の「新しいカテゴリ」フィールドで新規作成できます。</small>
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.new_category.id_for_label }}">{{ form.new_category.label }}</label>
+          {{ form.new_category }}
+          {{ form.new_category.errors }}
+          {% if form.new_category.help_text %}
+            <small class="muted">{{ form.new_category.help_text }}</small>
+          {% endif %}
         </div>
 
         <div class="form-row">
           <label for="{{ form.tags.id_for_label }}">タグ</label>
           {{ form.tags }}
           {{ form.tags.errors }}
+          <small class="muted">既存のタグから選択するか、下の「新しいタグ」フィールドで新規作成できます。</small>
         </div>
 
         <div class="form-row">
-          <label for="{{ form.image.id_for_label }}">画像</label>
-          {{ form.image }}
-          {{ form.image.errors }}
-          {% if object and object.image %}
-            <div class="current-image">
-              <p>現在の画像:</p>
-              <img src="{{ object.image.url }}" alt="{{ object.title }}" style="max-width: 300px; margin-top: 10px;">
-            </div>
+          <label for="{{ form.new_tags.id_for_label }}">{{ form.new_tags.label }}</label>
+          {{ form.new_tags }}
+          {{ form.new_tags.errors }}
+          {% if form.new_tags.help_text %}
+            <small class="muted">{{ form.new_tags.help_text }}</small>
           {% endif %}
         </div>
 

@@ -16,6 +16,7 @@
           {% if user.is_authenticated %}
             <a href="{% url 'posts:post_create' %}">新規投稿</a>
             <a href="{% url 'posts:manage_post_list' %}">自分の投稿</a>
+            <span class="user-name">{{ user.username }}</span>
             <a href="{% url 'accounts:logout' %}">ログアウト</a>
           {% else %}
             <a href="{% url 'accounts:signup' %}">新規登録</a>

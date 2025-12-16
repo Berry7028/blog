@@ -6,7 +6,15 @@
   <article class="post">
     <h1 class="page-title">{{ post.title }}</h1>
     <div class="meta">
-      {% if post.published_at %}<span>{{ post.published_at|date:"Y-m-d H:i" }}</span>{% endif %}
+      {% if post.author %}
+        <span>{{ post.author.username }}</span>
+      {% endif %}
+      {% if post.published_at %}
+        <span>{{ post.published_at|date:"Y年m月d日" }}</span>
+      {% endif %}
+      {% if post.body %}
+        <span>{% widthratio post.body|length 500 1 %}分</span>
+      {% endif %}
       {% if post.category %}
         <span>· <a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a></span>
       {% endif %}
@@ -19,8 +27,8 @@
     </div>
 
     {% if post.image %}
-      <div class="post-image">
-        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto; margin: 20px 0;">
+      <div class="post-image" style="margin: 24px 0; border-radius: 16px; overflow: hidden;">
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; height: auto; display: block;">
       </div>
     {% endif %}
 

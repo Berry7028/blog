@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.text import slugify
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
@@ -107,8 +108,56 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user
+        
+        # 新しいカテゴリを作成
+        new_category_name = form.cleaned_data.get('new_category', '').strip()
+        if new_category_name:
+            category_slug = slugify(new_category_name)
+            # スラッグが重複する場合は番号を追加
+            base_slug = category_slug
+            counter = 2
+            while Category.objects.filter(slug=category_slug).exists():
+                category_slug = f'{base_slug}-{counter}'
+                counter += 1
+            category = Category.objects.create(
+                name=new_category_name,
+                slug=category_slug
+            )
+            post.category = category
+            messages.success(self.request, f'新しいカテゴリ「{new_category_name}」を作成しました。')
+        
         post.save()
         form.save_m2m()
+        
+        # 新しいタグを作成
+        new_tags_str = form.cleaned_data.get('new_tags', '').strip()
+        if new_tags_str:
+            tag_names = [tag.strip() for tag in new_tags_str.split(',') if tag.strip()]
+            created_tags = []
+            for tag_name in tag_names:
+                # 既に存在するタグを大文字小文字を区別せずに検索
+                try:
+                    tag = Tag.objects.get(name__iexact=tag_name)
+                except Tag.DoesNotExist:
+                    # タグが存在しない場合は作成
+                    tag_slug = slugify(tag_name)
+                    # スラッグが重複する場合は番号を追加
+                    base_slug = tag_slug
+                    counter = 2
+                    while Tag.objects.filter(slug=tag_slug).exists():
+                        tag_slug = f'{base_slug}-{counter}'
+                        counter += 1
+                    tag = Tag.objects.create(
+                        name=tag_name,
+                        slug=tag_slug
+                    )
+                    created_tags.append(tag_name)
+                # タグを投稿に追加
+                post.tags.add(tag)
+            
+            if created_tags:
+                messages.success(self.request, f'新しいタグ「{", ".join(created_tags)}」を作成しました。')
+        
         messages.success(self.request, '投稿を作成しました。')
         return redirect('posts:manage_post_list')
 
@@ -121,9 +170,59 @@ class PostUpdateView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
     slug_url_kwarg = 'slug'
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        post = form.save(commit=False)
+        
+        # 新しいカテゴリを作成
+        new_category_name = form.cleaned_data.get('new_category', '').strip()
+        if new_category_name:
+            category_slug = slugify(new_category_name)
+            # スラッグが重複する場合は番号を追加
+            base_slug = category_slug
+            counter = 2
+            while Category.objects.filter(slug=category_slug).exists():
+                category_slug = f'{base_slug}-{counter}'
+                counter += 1
+            category = Category.objects.create(
+                name=new_category_name,
+                slug=category_slug
+            )
+            post.category = category
+            messages.success(self.request, f'新しいカテゴリ「{new_category_name}」を作成しました。')
+        
+        post.save()
+        form.save_m2m()
+        
+        # 新しいタグを作成
+        new_tags_str = form.cleaned_data.get('new_tags', '').strip()
+        if new_tags_str:
+            tag_names = [tag.strip() for tag in new_tags_str.split(',') if tag.strip()]
+            created_tags = []
+            for tag_name in tag_names:
+                # 既に存在するタグを大文字小文字を区別せずに検索
+                try:
+                    tag = Tag.objects.get(name__iexact=tag_name)
+                except Tag.DoesNotExist:
+                    # タグが存在しない場合は作成
+                    tag_slug = slugify(tag_name)
+                    # スラッグが重複する場合は番号を追加
+                    base_slug = tag_slug
+                    counter = 2
+                    while Tag.objects.filter(slug=tag_slug).exists():
+                        tag_slug = f'{base_slug}-{counter}'
+                        counter += 1
+                    tag = Tag.objects.create(
+                        name=tag_name,
+                        slug=tag_slug
+                    )
+                    created_tags.append(tag_name)
+                # タグを投稿に追加
+                post.tags.add(tag)
+            
+            if created_tags:
+                messages.success(self.request, f'新しいタグ「{", ".join(created_tags)}」を作成しました。')
+        
         messages.success(self.request, '投稿を更新しました。')
-        return response
+        return redirect('posts:manage_post_list')
 
     def get_success_url(self):
         return reverse('posts:manage_post_list')
