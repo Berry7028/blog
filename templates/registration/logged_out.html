@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}ログアウト完了 | ブログ{% endblock %}
+
+{% block content %}
+  <div class="narrow">
+    <h1 class="page-title">ログアウト完了</h1>
+    <p class="muted">ログアウトしました。</p>
+    <p><a href="{% url 'posts:post_list' %}">トップへ戻る</a></p>
+  </div>
+{% endblock %}
+

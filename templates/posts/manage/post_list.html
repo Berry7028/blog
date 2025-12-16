@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}自分の投稿 | ブログ{% endblock %}
+
+{% block content %}
+  <div class="layout">
+    <section class="main">
+      <div class="page-row">
+        <h1 class="page-title">自分の投稿</h1>
+        <a class="btn" href="{% url 'posts:post_create' %}">新規作成</a>
+      </div>
+
+      {% for post in posts %}
+        <article class="card">
+          <h2 class="card-title">
+            {% if post.status == 'published' %}
+              <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+            {% else %}
+              {{ post.title }}
+            {% endif %}
+          </h2>
+          <div class="meta">
+            <span>ステータス: {{ post.get_status_display }}</span>
+            {% if post.published_at %}<span>· {{ post.published_at|date:"Y-m-d H:i" }}</span>{% endif %}
+          </div>
+          <div class="actions">
+            <a class="page-link" href="{% url 'posts:post_update' slug=post.slug %}">編集</a>
+            <a class="page-link" href="{% url 'posts:post_delete' slug=post.slug %}">削除</a>
+          </div>
+        </article>
+      {% empty %}
+        <p class="muted">まだ投稿がありません。</p>
+      {% endfor %}
+
+      {% include "partials/pagination.html" %}
+    </section>
+  </div>
+{% endblock %}
+

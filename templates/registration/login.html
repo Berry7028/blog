@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン | ブログ{% endblock %}
+
+{% block content %}
+  <div class="narrow">
+    <h1 class="page-title">ログイン</h1>
+    <div class="panel">
+      <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-row">
+          <label for="{{ form.username.id_for_label }}">ユーザー名</label>
+          {{ form.username }}
+          {{ form.username.errors }}
+        </div>
+        <div class="form-row">
+          <label for="{{ form.password.id_for_label }}">パスワード</label>
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+
+        <button type="submit" class="btn">ログイン</button>
+        <input type="hidden" name="next" value="{{ next }}" />
+      </form>
+    </div>
+  </div>
+{% endblock %}
+

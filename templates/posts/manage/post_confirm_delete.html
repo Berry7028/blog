@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}投稿を削除 | ブログ{% endblock %}
+
+{% block content %}
+  <div class="narrow">
+    <h1 class="page-title">投稿を削除</h1>
+    <div class="panel">
+      <p>「{{ object.title }}」を削除しますか？</p>
+      <form method="post" class="actions">
+        {% csrf_token %}
+        <button type="submit" class="btn">削除</button>
+        <a class="page-link" href="{% url 'posts:manage_post_list' %}">キャンセル</a>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+

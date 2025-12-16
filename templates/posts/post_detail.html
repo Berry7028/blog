@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} | Blog{% endblock %}
+
+{% block content %}
+  <article class="post">
+    <h1 class="page-title">{{ post.title }}</h1>
+    <div class="meta">
+      {% if post.published_at %}<span>{{ post.published_at|date:"Y-m-d H:i" }}</span>{% endif %}
+      {% if post.category %}
+        <span>· <a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a></span>
+      {% endif %}
+    </div>
+
+    <div class="tags">
+      {% for tag in post.tags.all %}
+        <a class="tag" href="{{ tag.get_absolute_url }}">#{{ tag.name }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="content">
+      {{ post.body|linebreaks }}
+    </div>
+  </article>
+
+  <section id="comments" class="comments">
+    <h2>コメント</h2>
+
+    {% for comment in comments %}
+      <div class="comment">
+        <div class="comment-meta">
+          <strong>{{ comment.name }}</strong>
+          <span class="muted">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+        </div>
+        <div class="comment-body">
+          {{ comment.body|linebreaks }}
+        </div>
+      </div>
+    {% empty %}
+      <p class="muted">コメントはまだありません。</p>
+    {% endfor %}
+
+    <div class="panel">
+      <h3>コメント投稿</h3>
+      <form method="post" action="{% url 'comments:comment_create' post_slug=post.slug %}" class="form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-row">
+          <label for="{{ form.name.id_for_label }}">名前</label>
+          {{ form.name }}
+          {{ form.name.errors }}
+        </div>
+        <div class="form-row">
+          <label for="{{ form.email.id_for_label }}">メール</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="form-row">
+          <label for="{{ form.body.id_for_label }}">本文</label>
+          {{ form.body }}
+          {{ form.body.errors }}
+        </div>
+        <button type="submit" class="btn">コメント投稿</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}

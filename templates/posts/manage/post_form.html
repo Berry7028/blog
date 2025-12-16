@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}編集{% else %}新規作成{% endif %} | ブログ{% endblock %}
+
+{% block content %}
+  <div class="narrow">
+    <h1 class="page-title">投稿を{% if object %}編集{% else %}新規作成{% endif %}</h1>
+    <div class="panel">
+      <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-row">
+          <label for="{{ form.title.id_for_label }}">タイトル</label>
+          {{ form.title }}
+          {{ form.title.errors }}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.slug.id_for_label }}">スラッグ (オプション)</label>
+          {{ form.slug }}
+          {{ form.slug.errors }}
+          <small class="muted">空ならタイトルから自動生成します。</small>
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.category.id_for_label }}">カテゴリ</label>
+          {{ form.category }}
+          {{ form.category.errors }}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.tags.id_for_label }}">タグ</label>
+          {{ form.tags }}
+          {{ form.tags.errors }}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.excerpt.id_for_label }}">抜粋</label>
+          {{ form.excerpt }}
+          {{ form.excerpt.errors }}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.body.id_for_label }}">本文</label>
+          {{ form.body }}
+          {{ form.body.errors }}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.status.id_for_label }}">ステータス</label>
+          {{ form.status }}
+          {{ form.status.errors }}
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn">保存</button>
+          <a class="page-link" href="{% url 'posts:manage_post_list' %}">キャンセル</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
