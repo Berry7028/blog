@@ -68,6 +68,7 @@ class Post(TimeStampedModel):
         related_name='posts',
     )
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
+    image = models.ImageField(upload_to='posts/', blank=True, null=True)
     excerpt = models.TextField(blank=True)
     body = models.TextField()
     status = models.CharField(

@@ -18,6 +18,13 @@
 
       {% for post in posts %}
         <article class="card">
+          {% if post.image %}
+            <div class="card-image">
+              <a href="{{ post.get_absolute_url }}">
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width: 100%; height: auto; max-height: 300px; object-fit: cover; border-radius: 4px 4px 0 0;">
+              </a>
+            </div>
+          {% endif %}
           <h2 class="card-title">
             <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
           </h2>

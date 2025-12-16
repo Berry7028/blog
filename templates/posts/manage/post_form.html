@@ -6,7 +6,7 @@
   <div class="narrow">
     <h1 class="page-title">投稿を{% if object %}編集{% else %}新規作成{% endif %}</h1>
     <div class="panel">
-      <form method="post" class="form">
+      <form method="post" enctype="multipart/form-data" class="form">
         {% csrf_token %}
         {{ form.non_field_errors }}
 
@@ -33,6 +33,18 @@
           <label for="{{ form.tags.id_for_label }}">タグ</label>
           {{ form.tags }}
           {{ form.tags.errors }}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.image.id_for_label }}">画像</label>
+          {{ form.image }}
+          {{ form.image.errors }}
+          {% if object and object.image %}
+            <div class="current-image">
+              <p>現在の画像:</p>
+              <img src="{{ object.image.url }}" alt="{{ object.title }}" style="max-width: 300px; margin-top: 10px;">
+            </div>
+          {% endif %}
         </div>
 
         <div class="form-row">
